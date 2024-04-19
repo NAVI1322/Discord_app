@@ -27,6 +27,8 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env 
+# I added .env file Navi
 
 # vercel
 .vercel
