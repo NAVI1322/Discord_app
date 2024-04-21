@@ -3,6 +3,8 @@
 import * as z from "zod"
 import { useForm } from "react-hook-form";
 import  {zodResolver} from "@hookform/resolvers/zod"
+import axios from "axios"
+import { useRouter } from "next/navigation";
 
 
 import{
@@ -30,13 +32,14 @@ import { useEffect, useState } from "react";
 import { FileUpload } from "@/components/file-upload";
 
 
+
 // form validation picked by resolve in the useForm 
 const formSchema = z.object({
     name:z.string().min(1,{
         message:"Server Name is required"
     }),
     imageUrl:z.string().min(1,{
-        message:"Server Name is required"
+        message:"Add a Profile Picture"
     }),
 })
 
@@ -46,6 +49,9 @@ const formSchema = z.object({
 export const InitailModal = () => {
 
     const [isMounted,setIsMounted] = useState(false) // to open/close the modal
+
+    const router = useRouter()
+
     const form = useForm({
         resolver:zodResolver(formSchema),  // this will resolve the issue and display the message (err)
         defaultValues:{
@@ -62,8 +68,22 @@ useEffect(()=>{
 
     const isLoading = form.formState.isSubmitting; // this will return a boolean if the form is submitting 
 
-    const onSubmit  = async (values:z.infer<typeof formSchema>) =>{
-        return console.log(values)
+
+
+    const onSubmit  = async (values:z.infer<typeof formSchema>) => {
+        
+       try{
+
+        axios.post('/api/servers',values)  // onClick this will navigate to the page
+         form.reset()
+         router.refresh()
+         window.location.reload();
+
+       }
+       catch(e)
+       {
+        console.log("error : " + e)
+       }
     }
 
     if(!isMounted)
@@ -83,25 +103,26 @@ useEffect(()=>{
                     </DialogDescription>
                     </DialogHeader>
 
-                    {/* there the Form start  I have to learn shadcn*/}
+                    {/* there the Form start  I have to learn shadcn*/} 
+                    {/* add props of a html form */}
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <div className="space-y-8 px-6">
                             <div className="flex items-center justify-center text-center">
                                 <FormField 
                                     control={form.control}
-                                    name="imageUrl"
+                                    name="imageUrl"  // this tell what passes as field
                                     render={({field})=>(
                                         <FormItem>
                                             <FormControl>
                                                 <FileUpload 
-                                                endpoint="serverImage" 
-                                                value={field.value}
-                                                onChange={field.onChange}
+                                                endpoint="serverImage"  // img for server
+                                                value={field.value}        // url of the image 
+                                                onChange={field.onChange}   // onChange
                                                 />
-                                                
                                             </FormControl>
-                                        </FormItem>
+                                  
+                                        </FormItem> 
                                         )}
                                      />
                             </div>

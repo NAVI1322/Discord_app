@@ -1,9 +1,11 @@
 
-import  { RedirectToSignIn ,} from "@clerk/nextjs"
+import  { RedirectToSignIn } from "@clerk/nextjs"
 import { currentUser } from '@clerk/nextjs/server';
 
 import {db} from '@/lib/db'
 
+
+// check if user exist and create if not
 export const initialProfile = async () =>{
     const user = await currentUser()
 
