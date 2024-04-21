@@ -8,31 +8,23 @@ import { redirect } from "next/navigation";
 import { InitailModal } from "@/components/modals/initial-modal";
 
 
-interface UserProfile {
-    id: string;
-    userId: string;
-    name: string;
-    imageUrl: string;
-    email: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }
-  
+
 const SetupPage = async () => {
 
-    const profile = await initialProfile() as UserProfile;
+    const profile:any = await initialProfile() 
 
-    console.log(profile)
+    const id:any = profile.id;
 
     const server = await db.server.findFirst({
         where:{
-            members:{
+            members:{   
                 some:{
-                    profileId:profile.id               }
+                    profileId:id}
             }
         }
     });
 
+    console.log(profile.id)
 
 
     if(server)
